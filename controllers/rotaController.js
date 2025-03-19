@@ -2,6 +2,20 @@ const Rota = require('../models/Rota');
 
 exports.criarRota = async (req, res) => {
     try {
+        // Validação básica dos campos obrigatórios
+        const { nome, data, tipoEntrega, placaVeiculo, tipoVeiculo, total } = req.body;
+        if (!nome || !data || !tipoEntrega || !placaVeiculo || !tipoVeiculo || !total) {
+            return res.status(400).json({
+                success: false,
+                message: "Todos os campos obrigatórios devem ser preenchidos"
+            });
+        }
+
+        // Converter valores numéricos
+        req.body.quantidadePacotes = parseInt(req.body.quantidadePacotes) || 0;
+        req.body.valorExtra = parseFloat(req.body.valorExtra) || 0;
+        req.body.total = parseFloat(req.body.total);
+
         const rota = new Rota(req.body);
         await rota.save();
         res.status(201).json({
